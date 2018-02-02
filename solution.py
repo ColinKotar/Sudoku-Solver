@@ -1,15 +1,13 @@
-
 from utils import *
-
+import tests as test
 
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-unitlist = row_units + column_units + square_units
+diagonal_units = [['A1', 'B2', 'C3', 'D4', 'E5', 'F6', 'G7', 'H8', 'I9'], ['A9', 'B8', 'C7', 'D6', 'F4', 'G3', 'H2', 'I1']]
+unitlist = row_units + column_units + square_units + diagonal_units
 
-# TODO: Update the unit list to add the new diagonal units
-unitlist = unitlist
-
+print(diagonal_units)
 
 # Must be called after all units (including diagonals) are added to the unitlist
 units = extract_units(unitlist, boxes)
@@ -63,16 +61,12 @@ def eliminate(values):
     dict
         The values dictionary with the assigned values eliminated from peers
     """
-    nums = '123456789'
-    keys = boxes
-    values = []
-    for i in grid:
-        if i == '.':
-            values.append(nums)
-        else:
-            values.append(i)
-
-    return dict(zip(keys, values))
+    for k in values:
+        if len(values[k]) == 1:
+            num = values[k]
+            for p in peers[k]:
+                values[p] = values[p].replace(num, '')
+    return values
 
 
 def only_choice(values):
@@ -154,7 +148,6 @@ def search(values):
     You should be able to complete this function by copying your code from the classroom
     and extending it to call the naked twins strategy.
     """
-    "
     # Using depth-first search and propagation, create a search tree and solve the sudoku."
     # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
