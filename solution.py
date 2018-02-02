@@ -140,8 +140,25 @@ def search(values):
     You should be able to complete this function by copying your code from the classroom
     and extending it to call the naked twins strategy.
     """
-    # TODO: Copy your code from the classroom to complete this function
-    raise NotImplementedError
+    "
+    # Using depth-first search and propagation, create a search tree and solve the sudoku."
+    # First, reduce the puzzle using the previous function
+    values = reduce_puzzle(values)
+
+    if not values:
+        return False
+
+    if all(len(values[n]) == 1 for n in boxes):
+        return values
+    # Choose one of the unfilled squares with the fewest possibilities
+    _, s = min((len(values[s]), s) for s in boxes if len(values[s]) > 1)
+    # Now use recursion to solve each one of the resulting sudokus, and if one returns a value (not False), return that answer!
+    for value in values[s]:
+        new_sudoku = values.copy()
+        new_sudoku[s] = value
+        attempt = search(new_sudoku)
+        if attempt:
+            return attempt
 
 
 def solve(grid):
